@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -12,7 +13,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
-    UPLOAD_DIR: str = "./uploads"
+    UPLOAD_DIR: str = "/tmp/farmlink-uploads" if os.getenv("VERCEL") else "./uploads"
     MAX_UPLOAD_MB: int = 5
     SEED_ADMIN_EMAIL: str = "admin@farmlink.example.com"
     SEED_ADMIN_PASSWORD: str = "change-me-before-deploy"

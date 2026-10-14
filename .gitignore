@@ -6,6 +6,7 @@ __pycache__/
 !.env.*.example
 *.db
 uploads/
+api/__pycache__/
 .pytest_cache/
 node_modules/
 dist/

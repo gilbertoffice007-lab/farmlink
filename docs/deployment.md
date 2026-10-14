@@ -1,6 +1,6 @@
 # FarmLink — Deployment (MongoDB Atlas + Render + Vercel)
 
-Production topology: **Vercel (frontend SPA)** → HTTPS → **Render (FastAPI)** → **MongoDB Atlas**. No mock data anywhere — the database starts with the taxonomy + admin only, and sellers publish real listings.
+Production topology: **Vercel (frontend SPA + FastAPI serverless function)** → **MongoDB Atlas**. No mock data anywhere — the database starts with the taxonomy + admin only, and sellers publish real listings.
 
 ## 1. MongoDB Atlas (free tier)
 
@@ -13,17 +13,18 @@ Production topology: **Vercel (frontend SPA)** → HTTPS → **Render (FastAPI)*
    `mongodb+srv://farmlink-app:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority`
 5. The app uses database name from `MONGODB_DB` (default `farmlink`); indexes are created automatically on startup.
 
-## 2. Backend on Render
+## 2. Backend and frontend on Vercel
 
-Config is in `backend/render.yaml` (deploy as Blueprint) or manually:
+The repository root contains the Vercel configuration. `api/index.py` exposes the FastAPI app, while the same deployment builds the Vite frontend from `frontend/`.
 
-1. Render Dashboard → **New → Web Service** → connect the repo, root directory `backend`.
-2. Build: `pip install -r requirements.txt` · Start: `uvicorn app.main:app --host 0.0.0.0 --port $PORT` · Health check: `/health`.
-3. Environment variables (Render → Environment):
+1. Vercel Dashboard → **Add New → Project** → import this repository.
+2. Leave **Root Directory** set to the repository root.
+3. Vercel will use `vercel.json`, `requirements.txt`, and the `frontend/package.json` build.
+4. Add these environment variables in Vercel:
 
 | Key | Value |
 |---|---|
-| `PYTHON_VERSION` | `3.11.9` |
+| `PYTHON_VERSION` | `3.11` |
 | `APP_ENV` | `production` |
 | `MONGODB_URI` | Atlas SRV string (secret) |
 | `MONGODB_DB` | `farmlink` |
@@ -31,21 +32,14 @@ Config is in `backend/render.yaml` (deploy as Blueprint) or manually:
 | `CORS_ORIGINS` | `https://<your-app>.vercel.app` |
 | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | real admin credentials (secret) |
 
-4. After first deploy, create taxonomy + admin via Render **Shell**:
-   `python scripts/seed.py` (run from the `backend/` directory).
-5. Verify: `https://<service>.onrender.com/health` → `{"status":"ok",...}` and `/docs`.
+5. Add `VITE_API_BASE_URL=/api/v1` for the frontend. This uses the same Vercel origin for the API.
+6. Deploy. Verify `https://<your-app>.vercel.app/health` and `https://<your-app>.vercel.app/docs`.
+7. Seed MongoDB once from a local environment with the same production variables:
+   `cd backend; python scripts/seed.py`
 
-> Uploads note: Render's filesystem is ephemeral — product images uploaded in production disappear on redeploy. For a lasting store, plug an S3/Cloudinary adapter behind `POST /uploads/image` (interface is already isolated in `app/api/v1/endpoints/uploads.py`).
+`UPLOAD_DIR` defaults to `/tmp/farmlink-uploads` on Vercel. Vercel storage is ephemeral, so uploaded images are not permanent. For persistent images, use Cloudinary, Amazon S3, or Cloudflare R2.
 
-## 3. Frontend on Vercel
-
-`frontend/vercel.json` handles SPA routing (all routes → `index.html`).
-
-1. Vercel Dashboard → **Add New → Project** → import repo, root directory `frontend` (framework auto-detected: Vite, build `npm run build`, output `dist/`).
-2. **Environment Variables** → add `VITE_API_BASE_URL=https://<service>.onrender.com/api/v1` (Production).
-3. Deploy. Then copy the Vercel URL back into Render's `CORS_ORIGINS` and redeploy the backend.
-
-## 4. Local development (unchanged workflow)
+## 3. Local development (unchanged workflow)
 
 Backend needs a reachable MongoDB — either local `mongod` or your Atlas cluster in `backend/.env` (`MONGODB_URI=`). Then:
 
@@ -67,7 +61,7 @@ npm run dev                   # http://localhost:5173
 
 Tests (no live DB needed — mongomock): `cd backend; python -m pytest tests/test_api.py -v`.
 
-## 5. Environment reference
+## 4. Environment reference
 
 Backend (`backend/.env`): `APP_ENV, MONGODB_URI, MONGODB_DB, JWT_SECRET_KEY (≥32 chars), JWT_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, CORS_ORIGINS, UPLOAD_DIR, MAX_UPLOAD_MB, SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD`.
 Frontend: `VITE_API_BASE_URL` (`.env` local, Vercel env var for production).
