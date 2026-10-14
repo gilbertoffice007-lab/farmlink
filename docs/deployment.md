@@ -17,6 +17,8 @@ Production topology: **Vercel (frontend SPA + FastAPI serverless function)** →
 
 The repository root contains the Vercel configuration. `api/index.py` exposes the FastAPI app, while the same deployment builds the Vite frontend from `frontend/`.
 
+**Important:** In Vercel project settings, set **Root Directory** to `.` (the repository root). Do not set it to `backend` or `frontend`. If the root is `backend`, Vercel runs `npm --prefix frontend install` as `backend/frontend` and fails with `package.json` not found.
+
 1. Vercel Dashboard → **Add New → Project** → import this repository.
 2. Leave **Root Directory** set to the repository root.
 3. Vercel will use `vercel.json`, `requirements.txt`, and the `frontend/package.json` build.
@@ -38,6 +40,16 @@ The repository root contains the Vercel configuration. `api/index.py` exposes th
    `cd backend; python scripts/seed.py`
 
 `UPLOAD_DIR` defaults to `/tmp/farmlink-uploads` on Vercel. Vercel storage is ephemeral, so uploaded images are not permanent. For persistent images, use Cloudinary, Amazon S3, or Cloudflare R2.
+
+### Fixing a failed deployment caused by the root directory
+
+In Vercel, open **Project → Settings → General → Root Directory**:
+
+1. Change the value from `backend` to `.`.
+2. Save the setting.
+3. Open **Deployments**, select the failed deployment, and choose **Redeploy**.
+
+The build log should then run `npm --prefix frontend install` from `/vercel/path0`, not `/vercel/path0/backend`.
 
 ## 3. Local development (unchanged workflow)
 
