@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+html { scroll-behavior: smooth; }
+body { @apply bg-cream text-charcoal font-sans antialiased; }
+:focus-visible { outline: 2px solid #28784A; outline-offset: 2px; }
+.font-display { font-family: 'Fraunces', Georgia, serif; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.card { @apply bg-white rounded-2xl shadow-card border border-line; }
+.card-hover { @apply transition duration-300 hover:shadow-lift hover:-translate-y-1 hover:border-farm/30; }
+.btn-primary { @apply inline-flex items-center justify-center gap-2 bg-farm hover:bg-farm-dark text-white font-semibold rounded-xl px-5 py-2.5 transition disabled:opacity-50 shadow-[0_6px_16px_rgba(40,120,74,.28)]; }
+.btn-secondary { @apply inline-flex items-center justify-center gap-2 bg-white border border-line hover:border-farm text-charcoal font-semibold rounded-xl px-5 py-2.5 transition; }
+.btn-gold { @apply inline-flex items-center justify-center gap-2 bg-gold/90 hover:bg-gold text-pine font-bold rounded-xl px-5 py-2.5 transition; }
+.input { @apply w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-[15px] placeholder:text-muted/70 focus:border-farm focus:ring-2 focus:ring-farm/20 outline-none; }
+.label { @apply block text-sm font-medium mb-1.5; }
+.badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold; }
+.skeleton { @apply animate-pulse bg-line/70 rounded-xl; }
+.shimmer { background: linear-gradient(110deg, #E4E9E1 40%, #f4f6f1 50%, #E4E9E1 60%); background-size: 200% 100%; @apply animate-shimmer rounded-xl; }
+
+/* editorial section heading */
+.eyebrow { @apply inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-farm bg-farm-light rounded-full px-3 py-1; }
+
+/* image treatment */
+.img-frame { @apply relative overflow-hidden bg-gradient-to-br from-farm-light via-cream to-sand; }
+.img-frame img { @apply w-full h-full object-cover transition duration-500; }
+.group:hover .img-frame img, a:hover .img-frame img { transform: scale(1.06); }
+
+/* marquee */
+.marquee-track { @apply flex gap-3 w-max animate-marquee; }
+.marquee-mask { mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent); }
+
+/* print: delivery run sheet */
+@media print {
+  header, footer, .no-print { display: none !important; }
+  body { background: white; }
+  .print-card { box-shadow: none !important; border: 1px solid #ccc !important; break-inside: avoid; }
+}
