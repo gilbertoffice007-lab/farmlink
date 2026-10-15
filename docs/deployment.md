@@ -15,7 +15,7 @@ Production topology: **Vercel (frontend SPA)** → **Render (FastAPI API)** → 
 
 ## 2. Backend on Render
 
-The repository root contains [`render.yaml`](../render.yaml) and [`.python-version`](../.python-version), a Render Blueprint and Python version pin for the FastAPI backend. It installs dependencies from `backend/requirements.txt`, requires a binary `pydantic-core` wheel, starts `app.main:app` on Render's `$PORT`, and uses `/health` for health checks. The Pydantic dependency is pinned to a release with prebuilt wheels for both Python 3.11 and Python 3.14.
+The repository root contains [`render.yaml`](../render.yaml) and [`.python-version`](../.python-version), a Render Blueprint and Python version pin for the FastAPI backend. It installs dependencies from `backend/requirements.txt`, requires a binary `pydantic-core` wheel, starts `app.main:app` on Render's `$PORT`, and uses `/health` for health checks. The shared Python version is `3.12`, which is available to both Render and Vercel.
 
 1. Render Dashboard → **New → Blueprint**.
 2. Select this repository and keep the Blueprint file set to `render.yaml` at the repository root.

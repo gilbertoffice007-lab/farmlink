@@ -13,7 +13,7 @@ services:
     autoDeploy: true
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.9
+        value: 3.12
       - key: APP_ENV
         value: production
       - key: MONGODB_URI
