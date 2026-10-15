@@ -50,8 +50,8 @@ docs/      project-overview, ui-ux-design, user-flows, database-schema, api-docu
 - Seed: `python scripts/seed.py` → 6 categories + admin (idempotent; `--reset` wipes collections for a clean slate)
 
 ## Deployment
-- **Backend → Render:** `backend/render.yaml` blueprint + env table in `docs/deployment.md` (needs Atlas `MONGODB_URI`).
-- **Frontend → Vercel:** `frontend/vercel.json` SPA rewrites; set `VITE_API_BASE_URL` to the Render URL (see `frontend/.env.production.example`).
+- **Backend → Render:** root `render.yaml` blueprint + env table in `docs/deployment.md` (needs Atlas `MONGODB_URI`).
+- **Frontend → Vercel:** root `vercel.json` SPA rewrites; set `VITE_API_BASE_URL` to the Render URL (see `frontend/.env.production.example`).
 - Full Atlas + Render + Vercel walkthrough: `docs/deployment.md`.
 
 ## Limitations (honest)

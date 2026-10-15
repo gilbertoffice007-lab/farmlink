@@ -1,6 +1,6 @@
 # FarmLink — Deployment (MongoDB Atlas + Render + Vercel)
 
-Production topology: **Vercel (frontend SPA + FastAPI serverless function)** → **MongoDB Atlas**. No mock data anywhere — the database starts with the taxonomy + admin only, and sellers publish real listings.
+Production topology: **Vercel (frontend SPA)** → **Render (FastAPI API)** → **MongoDB Atlas**. No mock data anywhere — the database starts with the taxonomy + admin only, and sellers publish real listings.
 
 ## 1. MongoDB Atlas (free tier)
 
@@ -13,31 +13,47 @@ Production topology: **Vercel (frontend SPA + FastAPI serverless function)** →
    `mongodb+srv://farmlink-app:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority`
 5. The app uses database name from `MONGODB_DB` (default `farmlink`); indexes are created automatically on startup.
 
-## 2. Backend and frontend on Vercel
+## 2. Backend on Render
 
-The repository root contains the Vercel configuration. `api/index.py` exposes the FastAPI app, while the same deployment builds the Vite frontend from `frontend/`.
+The repository root contains [`render.yaml`](../render.yaml) and [`.python-version`](../.python-version), a Render Blueprint and Python version pin for the FastAPI backend. It installs dependencies from `backend/requirements.txt`, starts `app.main:app` on Render's `$PORT`, and uses `/health` for health checks.
+
+1. Render Dashboard → **New → Blueprint**.
+2. Select this repository and keep the Blueprint file set to `render.yaml` at the repository root.
+3. Review the `farmlink-api` web service and deploy it.
+4. In the service's Environment settings, provide:
+
+| Key | Value |
+|---|---|
+| `MONGODB_URI` | Atlas SRV string (secret) |
+| `MONGODB_DB` | `farmlink` |
+| `JWT_SECRET_KEY` | Generate a 32+ character secret |
+| `CORS_ORIGINS` | Your Vercel URL, for example `https://farmlink.vercel.app` |
+| `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | Real admin credentials (secret) |
+
+The Blueprint supplies the remaining non-secret defaults. Render generates `JWT_SECRET_KEY` automatically when the service is created. After the first deploy, copy the public service URL (for example `https://farmlink-api.onrender.com`) for the frontend configuration below.
+
+Seed the production database once from a trusted local environment using the same production variables:
+
+```powershell
+cd backend
+python scripts/seed.py
+```
+
+## 3. Frontend on Vercel
+
+The repository root contains the Vercel configuration for the Vite frontend in `frontend/`.
 
 **Important:** In Vercel project settings, set **Root Directory** to `.` (the repository root). Do not set it to `backend` or `frontend`. If the root is `backend`, Vercel runs `npm --prefix frontend install` as `backend/frontend` and fails with `package.json` not found.
 
 1. Vercel Dashboard → **Add New → Project** → import this repository.
 2. Leave **Root Directory** set to the repository root.
 3. Vercel will use `vercel.json`, `requirements.txt`, and the `frontend/package.json` build.
-4. Add these environment variables in Vercel:
+4. Add `VITE_API_BASE_URL` in Vercel, using the Render service URL:
 
 | Key | Value |
 |---|---|
-| `PYTHON_VERSION` | `3.11` |
-| `APP_ENV` | `production` |
-| `MONGODB_URI` | Atlas SRV string (secret) |
-| `MONGODB_DB` | `farmlink` |
-| `JWT_SECRET_KEY` | 32+ random chars (Generate) |
-| `CORS_ORIGINS` | `https://<your-app>.vercel.app` |
-| `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | real admin credentials (secret) |
-
-5. Add `VITE_API_BASE_URL=/api/v1` for the frontend. This uses the same Vercel origin for the API.
-6. Deploy. Verify `https://<your-app>.vercel.app/health` and `https://<your-app>.vercel.app/docs`.
-7. Seed MongoDB once from a local environment with the same production variables:
-   `cd backend; python scripts/seed.py`
+| `VITE_API_BASE_URL` | `https://farmlink-api.onrender.com/api/v1` |
+5. Deploy. Verify the Render API at `https://farmlink-api.onrender.com/health` and the frontend at `https://<your-app>.vercel.app/`.
 
 `UPLOAD_DIR` defaults to `/tmp/farmlink-uploads` on Vercel. Vercel storage is ephemeral, so uploaded images are not permanent. For persistent images, use Cloudinary, Amazon S3, or Cloudflare R2.
 
@@ -51,7 +67,7 @@ In Vercel, open **Project → Settings → General → Root Directory**:
 
 The build log should then run `npm --prefix frontend install` from `/vercel/path0`, not `/vercel/path0/backend`.
 
-## 3. Local development (unchanged workflow)
+## 4. Local development (unchanged workflow)
 
 Backend needs a reachable MongoDB — either local `mongod` or your Atlas cluster in `backend/.env` (`MONGODB_URI=`). Then:
 
@@ -73,7 +89,7 @@ npm run dev                   # http://localhost:5173
 
 Tests (no live DB needed — mongomock): `cd backend; python -m pytest tests/test_api.py -v`.
 
-## 4. Environment reference
+## 5. Environment reference
 
 Backend (`backend/.env`): `APP_ENV, MONGODB_URI, MONGODB_DB, JWT_SECRET_KEY (≥32 chars), JWT_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, CORS_ORIGINS, UPLOAD_DIR, MAX_UPLOAD_MB, SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD`.
 Frontend: `VITE_API_BASE_URL` (`.env` local, Vercel env var for production).

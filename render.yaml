@@ -1,4 +1,5 @@
 # Render blueprint for FarmLink — MUST live at the repository root.
+# The root .python-version file pins Render's build/runtime Python version.
 # Deploy: Render Dashboard → New → Blueprint → select this repo.
 # After deploy, set the `sync: false` secrets below in the dashboard
 # (MONGODB_URI from Atlas, CORS_ORIGINS = your Vercel URL).
