@@ -16,8 +16,8 @@ export default function Profile() {
         <div><b>Role:</b> {user?.role}</div>
       </div>
       <h2 className="font-bold mt-6">Addresses</h2>
-      {(addrs || []).length === 0 && <div className="mt-2"><Empty title="No addresses" hint="Add one at checkout." /></div>}
-      {(addrs || []).map((a: any) => (
+      {(Array.isArray(addrs) ? addrs : []).length === 0 && <div className="mt-2"><Empty title="No addresses" hint="Add one at checkout." /></div>}
+      {(Array.isArray(addrs) ? addrs : []).map((a: any) => (
         <div key={a.id} className="card p-4 mt-2 text-sm"><b>{a.recipient_name}</b> · {a.phone}<br />{a.address_line}, {a.city}, {a.state} {a.postal_code}</div>
       ))}
       <Link to="/market" className="btn-secondary mt-5 inline-block">Back to marketplace</Link>

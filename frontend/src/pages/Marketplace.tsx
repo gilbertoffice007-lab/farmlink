@@ -55,7 +55,7 @@ export default function Marketplace() {
     setParams(n)
   }
 
-  const activeCat = (cats.data || []).find((c: any) => String(c.id) === filters.category_id)
+  const activeCat = (Array.isArray(cats.data) ? cats.data : []).find((c: any) => String(c.id) === filters.category_id)
 
   const Filters = (
     <div className="space-y-5">
@@ -63,7 +63,7 @@ export default function Marketplace() {
         <div className="font-bold text-sm mb-2">Category</div>
         <div className="flex flex-wrap gap-2">
           <button onClick={() => set('cat', '')} className={`badge border !py-1.5 !px-3 transition ${!filters.category_id ? 'bg-forest text-white border-forest' : 'bg-white border-line hover:border-farm'}`}>All</button>
-          {(cats.data || []).map((c: any) => (
+          {(Array.isArray(cats.data) ? cats.data : []).map((c: any) => (
             <button key={c.id} onClick={() => set('cat', String(c.id))}
               className={`badge border !py-1.5 !px-3 transition ${filters.category_id === String(c.id) ? 'bg-forest text-white border-forest' : 'bg-white border-line hover:border-farm'}`}>{c.name}</button>
           ))}
@@ -112,7 +112,7 @@ export default function Marketplace() {
               action={<button className="btn-secondary" onClick={() => { setParams({}); setDraft('') }}>Clear filters</button>} />
           )}
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {(products.data?.items || []).map((p: any) => (
+            {(Array.isArray(products.data?.items) ? products.data.items : []).map((p: any) => (
               <ProductCard key={p.id} p={p} canBuy={canBuy}
                 onAdd={guardBuy((x) => cart.mutate(x))} onWish={guardBuy((x) => wish.mutate(x))} adding={cart.isPending} />
             ))}

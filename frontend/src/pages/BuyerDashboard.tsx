@@ -37,7 +37,7 @@ export default function BuyerDashboard() {
     onError: (e: any) => toast.error(apiError(e))
   })
 
-  const active = (dash?.recent_orders || []).filter((o: any) => !TERMINAL.includes(o.status))
+  const active = (Array.isArray(dash?.recent_orders) ? dash.recent_orders : []).filter((o: any) => !TERMINAL.includes(o.status))
   const firstName = user?.full_name.split(' ')[0]
 
   return (
@@ -100,9 +100,9 @@ export default function BuyerDashboard() {
       <div className="grid lg:grid-cols-2 gap-6 mt-8">
         <div>
           <h2 className="font-display font-bold text-xl flex items-center gap-2"><Heart size={18} className="text-farm" /> Your wishlist</h2>
-          {(wishlist || []).length === 0 && <p className="text-sm text-muted mt-2">Tap the heart on any product to save it here.</p>}
+          {(Array.isArray(wishlist) ? wishlist : []).length === 0 && <p className="text-sm text-muted mt-2">Tap the heart on any product to save it here.</p>}
           <div className="grid grid-cols-2 gap-3 mt-3">
-            {(wishlist || []).slice(0, 4).map((p: any) => (
+            {(Array.isArray(wishlist) ? wishlist : []).slice(0, 4).map((p: any) => (
               <ProductCard key={p.id} p={p} onAdd={(x) => cartMut.mutate(x)} onWish={(x) => wishMut.mutate(x.id)} adding={cartMut.isPending} />
             ))}
           </div>
@@ -111,7 +111,7 @@ export default function BuyerDashboard() {
           <h2 className="font-display font-bold text-xl flex items-center gap-2"><Sparkles size={18} className="text-farm" /> Recommended for you</h2>
           <p className="text-xs text-muted mt-1">Based on what's popular in categories you browse.</p>
           <div className="grid grid-cols-2 gap-3 mt-3">
-            {(recommended || []).map((p: any) => (
+            {(Array.isArray(recommended) ? recommended : []).map((p: any) => (
               <ProductCard key={p.id} p={p} onAdd={(x) => cartMut.mutate(x)}
                 onWish={(x) => api.post(`/wishlist/${x.id}`).then(() => { queryClient.invalidateQueries({ queryKey: ['wish'] }); toast.success('Saved') }).catch((e) => toast.error(apiError(e)))}
                 adding={cartMut.isPending} />
@@ -127,18 +127,18 @@ export default function BuyerDashboard() {
       <div className="grid lg:grid-cols-2 gap-6 mt-8">
         <div className="card p-5">
           <div className="flex justify-between items-center"><h2 className="font-bold flex items-center gap-2"><MapPin size={17} className="text-farm" /> Delivery addresses</h2><Link to="/checkout" className="text-farm text-sm font-semibold">Manage</Link></div>
-          {(addrs || []).length === 0 && <p className="text-sm text-muted mt-2">No saved address yet — add one at checkout.</p>}
-          {(addrs || []).slice(0, 3).map((a: any) => (
+          {(Array.isArray(addrs) ? addrs : []).length === 0 && <p className="text-sm text-muted mt-2">No saved address yet — add one at checkout.</p>}
+          {(Array.isArray(addrs) ? addrs : []).slice(0, 3).map((a: any) => (
             <div key={a.id} className="text-sm py-2 border-b border-line/70 last:border-0"><b>{a.recipient_name}</b> <span className="text-muted">· {a.address_line}, {a.city}</span></div>
           ))}
         </div>
         <div className="card p-5">
           <h2 className="font-bold flex items-center gap-2"><Bell size={17} className="text-farm" /> Notifications</h2>
-          {(notifs || []).length === 0 && <p className="text-sm text-muted mt-2">You're all caught up.</p>}
-          {(notifs || []).slice(0, 4).map((n: any) => (
+          {(Array.isArray(notifs) ? notifs : []).length === 0 && <p className="text-sm text-muted mt-2">You're all caught up.</p>}
+          {(Array.isArray(notifs) ? notifs : []).slice(0, 4).map((n: any) => (
             <div key={n.id} className="text-sm py-2 border-b border-line/70 last:border-0"><b>{n.title}</b><div className="text-muted">{n.message}</div></div>
           ))}
-          {(notifs || []).length > 0 && <Link to="/notifications" className="text-farm text-sm font-semibold mt-2 inline-block">View all</Link>}
+          {(Array.isArray(notifs) ? notifs : []).length > 0 && <Link to="/notifications" className="text-farm text-sm font-semibold mt-2 inline-block">View all</Link>}
         </div>
       </div>
     </div>

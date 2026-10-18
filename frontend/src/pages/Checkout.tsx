@@ -114,7 +114,7 @@ export default function Checkout() {
               <div className="mt-4">
                 <div className="font-bold text-sm flex items-center gap-2"><CalendarClock size={15} className="text-farm" /> Choose a delivery slot</div>
                 <div className="grid sm:grid-cols-2 gap-2 mt-2">
-                  {(policy?.slots || []).map((s: any) => (
+                  {(Array.isArray(policy?.slots) ? policy.slots : []).map((s: any) => (
                     <label key={s.id} className="border rounded-xl px-3.5 py-2.5 text-sm cursor-pointer has-[:checked]:border-farm has-[:checked]:ring-2 has-[:checked]:ring-farm/20 has-[:checked]:bg-farm-light/30 transition">
                       <input type="radio" value={s.id} {...register('delivery_slot')} className="accent-[#28784A] mr-2" />{s.label}
                     </label>
@@ -133,9 +133,9 @@ export default function Checkout() {
                 <h2 className="font-bold flex items-center gap-2"><MapPin size={17} className="text-farm" /> Delivery address</h2>
                 <button type="button" onClick={() => setShowAddr(!showAddr)} className="btn-secondary !px-3 !py-1.5 text-sm inline-flex items-center gap-1"><Plus size={14} /> New</button>
               </div>
-              {(addrs || []).length === 0 && <p className="text-sm text-muted mt-2">No address yet — add one to continue.</p>}
+              {(Array.isArray(addrs) ? addrs : []).length === 0 && <p className="text-sm text-muted mt-2">No address yet — add one to continue.</p>}
               <div className="space-y-2 mt-3">
-                {(addrs || []).map((a: any) => (
+                {(Array.isArray(addrs) ? addrs : []).map((a: any) => (
                   <div key={a.id} className="flex gap-2 items-start border border-line rounded-2xl p-3.5 text-sm has-[:checked]:border-farm has-[:checked]:bg-farm-light/20 transition">
                     <input type="radio" name="addr" checked={addrId === a.id || (!addrId && a.is_default)} onChange={() => setAddrId(a.id)} className="accent-[#28784A] mt-1" aria-label={`Deliver to ${a.recipient_name}`} />
                     <span className="flex-1"><b>{a.recipient_name}</b> · {a.phone}<br /><span className="text-muted">{a.address_line}, {a.city}, {a.state} {a.postal_code}</span></span>

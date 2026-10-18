@@ -47,7 +47,15 @@ def get_db():
 
 
 def init_db() -> None:
-    """Create unique indexes (idempotent). Safe to call on every startup."""
+    """Create unique indexes (idempotent). Never raises: a transient Atlas
+    hiccup must not kill the app — requests will surface real DB errors."""
+    try:
+        _create_indexes()
+    except Exception as e:
+        print(f"[farmlink] Mongo init warning (indexes skipped, will retry next start): {str(e)[:200]}")
+
+
+def _create_indexes() -> None:
     db = get_database()
     db.users.create_index([("email", ASCENDING)], unique=True)
     db.seller_profiles.create_index([("user_id", ASCENDING)], unique=True)

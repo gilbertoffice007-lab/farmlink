@@ -109,8 +109,8 @@ export default function ProductDetails() {
 
           <div className="mt-8">
             <h2 className="font-display font-bold text-xl">Reviews {p.rating_count > 0 && <span className="text-sm font-sans text-muted">({p.rating_count})</span>}</h2>
-            {(reviews || []).length === 0 && <p className="text-sm text-muted mt-2">No reviews yet. Only buyers with completed orders can review.</p>}
-            {(reviews || []).map((r: any) => (
+            {(Array.isArray(reviews) ? reviews : []).length === 0 && <p className="text-sm text-muted mt-2">No reviews yet. Only buyers with completed orders can review.</p>}
+            {(Array.isArray(reviews) ? reviews : []).map((r: any) => (
               <div key={r.id} className="card p-4 mt-2.5 text-sm">
                 <Stars avg={r.rating} /> <b className="ml-1">{r.buyer_name}</b>
                 <p className="text-muted mt-1">{r.comment}</p>
@@ -123,7 +123,7 @@ export default function ProductDetails() {
       <div className="mt-12">
         <h2 className="font-display font-bold text-xl mb-4">You may also like</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {(related?.items || []).filter((x: any) => x.id !== p.id).slice(0, 4).map((x: any) => (
+          {(Array.isArray(related?.items) ? related.items : []).filter((x: any) => x.id !== p.id).slice(0, 4).map((x: any) => (
             <Link key={x.id} to={`/products/${x.id}`} className="card card-hover overflow-hidden group">
               <div className="img-frame h-36">
                 {x.image_url ? <img src={x.image_url} alt={x.name} loading="lazy" onError={imgFallback} />

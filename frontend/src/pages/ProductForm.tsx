@@ -71,7 +71,7 @@ export default function ProductForm() {
         <div className="grid sm:grid-cols-2 gap-4">
           <div><label className="label" htmlFor="cat">Category</label>
             <select id="cat" className="input" {...register('category_id')}>
-              <option value="">—</option>{(cats || []).map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              <option value="">—</option>{(Array.isArray(cats) ? cats : []).map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select></div>
           <div><label className="label" htmlFor="unit">Unit</label>
             <select id="unit" className="input" {...register('unit')}>

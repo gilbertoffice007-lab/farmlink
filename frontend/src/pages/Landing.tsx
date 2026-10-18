@@ -47,6 +47,9 @@ export default function Landing() {
   const { data: cats } = useQuery({
     queryKey: ['cats'], queryFn: async () => (await api.get('/categories')).data
   })
+  // Guard: API misconfig (e.g. HTML fallback) must never white-screen the app.
+  const catsArr = Array.isArray(cats) ? cats : []
+  const featuredArr = Array.isArray(featured) ? featured : []
   const { data: stats } = useQuery({
     queryKey: ['site-stats'], queryFn: async () => (await api.get('/stats')).data
   })
@@ -109,7 +112,7 @@ export default function Landing() {
             </div>
           </motion.div>
         </div>
-        <Marquee items={(cats || []).map((c: any) => c.name).length ? (cats || []).map((c: any) => c.name) : ['Vegetables', 'Fruits', 'Grains', 'Pulses', 'Spices', 'Organic']} />
+        <Marquee items={catsArr.length ? catsArr.map((c: any) => c.name) : ['Vegetables', 'Fruits', 'Grains', 'Pulses', 'Spices', 'Organic']} />
       </section>
 
       {/* LIVE STATS — real marketplace counters, no fabricated figures */}
@@ -140,7 +143,7 @@ export default function Landing() {
           <Link to="/market" className="text-farm font-semibold text-sm inline-flex items-center gap-1 hover:gap-2 transition-all">View all <ArrowRight size={15} /></Link>
         </motion.div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          {(cats || []).map((c: any, i: number) => (
+          {catsArr.map((c: any, i: number) => (
             <motion.div key={c.id} {...fadeUp}>
               <Link to={`/market?cat=${c.id}`} className="card card-hover overflow-hidden block group">
                 <div className="img-frame h-28">
@@ -165,7 +168,7 @@ export default function Landing() {
             <Link to="/market" className="text-farm font-semibold text-sm inline-flex items-center gap-1 hover:gap-2 transition-all">View all <ArrowRight size={15} /></Link>
           </motion.div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {(featured || []).slice(0, 8).map((p: any) => (
+            {featuredArr.slice(0, 8).map((p: any) => (
               <ProductCard key={p.id} p={p} canBuy={canBuy}
                 onAdd={guardBuy((x) => cart.mutate(x))} onWish={guardBuy((x) => wish.mutate(x))} adding={cart.isPending} />
             ))}
