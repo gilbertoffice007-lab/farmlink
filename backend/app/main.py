@@ -39,6 +39,19 @@ def health():
     return {"status": "ok", "app": "farmlink", "db": "mongodb"}
 
 
+@app.get("/")
+def root():
+    return {
+        "app": "FarmLink API",
+        "version": app.version,
+        "status": "running",
+        "database": "mongodb",
+        "docs": "/docs",
+        "health": "/health",
+        "api_base": "/api/v1",
+    }
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,

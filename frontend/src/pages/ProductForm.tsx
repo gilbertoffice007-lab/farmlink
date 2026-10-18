@@ -57,7 +57,8 @@ export default function ProductForm() {
     fd.append('file', f)
     try {
       const { data } = await api.post('/uploads/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
-      const full = `${import.meta.env.VITE_API_BASE_URL?.replace('/api/v1', '') || 'http://127.0.0.1:8000'}${data.image_url}`;
+      const apiOrigin = new URL(api.defaults.baseURL || import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1', window.location.origin).origin
+      const full = `${apiOrigin}${data.image_url}`;
       (document.getElementById('image_url') as HTMLInputElement).value = full
       toast.success('Image uploaded')
     } catch (e: any) { toast.error(apiError(e)) }
