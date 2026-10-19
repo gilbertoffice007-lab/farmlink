@@ -70,7 +70,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 pt-12 pb-14 grid lg:grid-cols-2 gap-10 items-center relative">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
             <span className="badge bg-white/10 text-lime border border-white/15"><Leaf size={13} /> Direct farmer marketplace</span>
-            <h1 className="font-display font-black text-[34px] sm:text-6xl leading-[1.05] sm:leading-[1.02] mt-4">
+            <h1 className="font-display font-black text-[30px] sm:text-6xl leading-[1.05] sm:leading-[1.02] mt-4">
               Fresh From Farms.<br /><span className="text-lime">Fair For Everyone.</span>
             </h1>
             <p className="text-white/70 text-lg mt-4 max-w-lg leading-relaxed">FarmLink connects farmers and FPOs directly with homes, retailers and restaurants — transparent farm-gate prices, harvest-fresh produce, and delivery to your doorstep.</p>

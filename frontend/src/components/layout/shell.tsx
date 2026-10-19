@@ -26,11 +26,11 @@ export function Navbar() {
         </div>
       </div>
       <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-line/80 shadow-[0_2px_20px_rgba(22,61,43,.05)]">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-3">
-          <button className="md:hidden p-2 -ml-2 rounded-lg hover:bg-cream" aria-label="Open menu" onClick={() => setOpen(true)}><Menu size={20} /></button>
-          <Link to="/" className="flex items-center gap-2 font-extrabold text-forest text-lg" aria-label="FarmLink home">
-            <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-farm to-forest text-white grid place-items-center shadow-[0_6px_16px_rgba(40,120,74,.35)]"><Leaf size={20} /></span>
-            <span className="font-display text-[22px] tracking-tight">FarmLink</span>
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-2 sm:gap-3">
+          <button className="md:hidden p-2 -ml-2 rounded-lg hover:bg-cream shrink-0" aria-label="Open menu" onClick={() => setOpen(true)}><Menu size={20} /></button>
+          <Link to="/" className="flex items-center gap-2 font-extrabold text-forest text-lg min-w-0" aria-label="FarmLink home">
+            <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-farm to-forest text-white grid place-items-center shadow-[0_6px_16px_rgba(40,120,74,.35)] shrink-0"><Leaf size={20} /></span>
+            <span className="font-display text-[22px] tracking-tight hidden sm:inline">FarmLink</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-[15px] font-medium ml-5" aria-label="Primary">
             <Link className="hover:text-farm transition" to="/market">{t('nav.explore')}</Link>
@@ -38,9 +38,9 @@ export function Navbar() {
             <a className="hover:text-farm transition" href="/#farmers">For Farmers</a>
             {user && <Link className="hover:text-farm transition inline-flex items-center gap-1" to="/orders"><Truck size={15} /> Track order</Link>}
           </nav>
-          <div className="ml-auto flex items-center gap-1.5">
+          <div className="ml-auto flex items-center gap-1 sm:gap-1.5 shrink-0">
             <select aria-label="Language" value={lang} onChange={(e) => setLang(e.target.value as any)}
-              className="border border-line rounded-lg px-1.5 sm:px-2 py-1.5 text-sm bg-white font-medium max-w-[92px] sm:max-w-none">
+              className="border border-line rounded-lg px-1.5 sm:px-2 py-1.5 text-sm bg-white font-medium max-w-[88px] sm:max-w-none">
               <option value="en">English</option>
               <option value="ta">தமிழ்</option>
             </select>
@@ -61,8 +61,8 @@ export function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className="text-sm font-semibold px-3 py-2 hover:text-farm transition">{t('nav.login')}</Link>
-                <Link to="/register" className="btn-primary !px-4 !py-2 text-sm">{t('nav.register')}</Link>
+                <Link to="/login" className="text-sm font-semibold px-2 sm:px-3 py-2 hover:text-farm transition whitespace-nowrap">{t('nav.login')}</Link>
+                <Link to="/register" className="btn-primary !px-3 sm:!px-4 !py-2 text-sm whitespace-nowrap">{t('nav.register')}</Link>
               </>
             )}
           </div>
