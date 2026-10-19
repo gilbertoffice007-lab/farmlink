@@ -72,7 +72,6 @@ export function Navbar() {
             <Link className="shrink-0 py-0.5" to="/market">{t('nav.market')}</Link>
             {user.role === 'buyer' && <Link className="shrink-0 py-0.5" to="/cart">{t('nav.cart')}{count > 0 && ` (${count})`}</Link>}
             <Link className="shrink-0 py-0.5" to="/orders">{t('nav.orders')}</Link>
-            <Link className="shrink-0 py-0.5" to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'}>{t('nav.dashboard')}</Link>
             <Link className="shrink-0 py-0.5" to="/notifications">{t('nav.notifications')}</Link>
             <Link className="shrink-0 py-0.5 inline-flex items-center gap-1" to="/profile"><UserIcon size={14} /> Profile</Link>
           </div>
