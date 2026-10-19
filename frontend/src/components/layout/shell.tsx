@@ -54,13 +54,9 @@ export function Navbar() {
                 )}
                 <Link to="/notifications" aria-label="Notifications" className="relative p-2 rounded-xl hover:bg-cream transition"><Bell size={20} /></Link>
                 <Link to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'}
-                  aria-label={t('nav.dashboard')}
-                  className="sm:hidden p-2 rounded-xl hover:bg-cream transition text-forest">
+                  aria-label={t('nav.dashboard')} title={t('nav.dashboard')}
+                  className="p-2 rounded-xl hover:bg-cream transition text-forest">
                   {user.role === 'admin' ? <ShieldCheck size={20} /> : <LayoutDashboard size={20} />}
-                </Link>
-                <Link to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'}
-                  className="hidden sm:inline-flex btn-secondary !px-3 !py-1.5 text-sm">
-                  {user.role === 'admin' ? <ShieldCheck size={16} /> : <LayoutDashboard size={16} />} {t('nav.dashboard')}
                 </Link>
                 <button onClick={() => { logout(); nav('/') }} className="p-2 rounded-xl hover:bg-cream transition hidden sm:block" aria-label="Log out"><LogOut size={18} /></button>
               </>
