@@ -70,7 +70,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 pt-12 pb-14 grid lg:grid-cols-2 gap-10 items-center relative">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
             <span className="badge bg-white/10 text-lime border border-white/15"><Leaf size={13} /> Direct farmer marketplace</span>
-            <h1 className="font-display font-black text-[42px] sm:text-6xl leading-[1.02] mt-4">
+            <h1 className="font-display font-black text-[34px] sm:text-6xl leading-[1.05] sm:leading-[1.02] mt-4">
               Fresh From Farms.<br /><span className="text-lime">Fair For Everyone.</span>
             </h1>
             <p className="text-white/70 text-lg mt-4 max-w-lg leading-relaxed">FarmLink connects farmers and FPOs directly with homes, retailers and restaurants — transparent farm-gate prices, harvest-fresh produce, and delivery to your doorstep.</p>
@@ -135,10 +135,10 @@ export default function Landing() {
 
       {/* CATEGORIES */}
       <section className="max-w-7xl mx-auto px-4 py-12">
-        <motion.div {...fadeUp} className="flex items-end justify-between mb-5">
+        <motion.div {...fadeUp} className="flex flex-wrap items-end justify-between gap-2 mb-5">
           <div>
             <span className="eyebrow">Shop by category</span>
-            <h2 className="font-display font-black text-3xl text-forest mt-2">What’s fresh today?</h2>
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-forest mt-2">What’s fresh today?</h2>
           </div>
           <Link to="/market" className="text-farm font-semibold text-sm inline-flex items-center gap-1 hover:gap-2 transition-all">View all <ArrowRight size={15} /></Link>
         </motion.div>
@@ -160,10 +160,10 @@ export default function Landing() {
       {/* FEATURED */}
       <section className="bg-white border-y border-line">
         <div className="max-w-7xl mx-auto px-4 py-12">
-          <motion.div {...fadeUp} className="flex items-end justify-between mb-5">
+          <motion.div {...fadeUp} className="flex flex-wrap items-end justify-between gap-2 mb-5">
             <div>
               <span className="eyebrow">Handpicked for you</span>
-              <h2 className="font-display font-black text-3xl text-forest mt-2">Featured harvest</h2>
+              <h2 className="font-display font-black text-2xl sm:text-3xl text-forest mt-2">Featured harvest</h2>
             </div>
             <Link to="/market" className="text-farm font-semibold text-sm inline-flex items-center gap-1 hover:gap-2 transition-all">View all <ArrowRight size={15} /></Link>
           </motion.div>
@@ -180,7 +180,7 @@ export default function Landing() {
       <section className="max-w-7xl mx-auto px-4 py-12">
         <motion.div {...fadeUp} className="rounded-3xl overflow-hidden bg-gradient-to-br from-forest to-pine text-white grid lg:grid-cols-2 relative">
           <div className="absolute inset-0 bg-[radial-gradient(600px_300px_at_90%_10%,rgba(185,217,122,.2),transparent)]" aria-hidden="true" />
-          <div className="p-8 sm:p-12 relative">
+          <div className="p-6 sm:p-12 relative">
             <span className="badge bg-white/10 text-lime border border-white/15"><Bike size={13} /> Farm-to-door delivery</span>
             <h2 className="font-display font-black text-3xl sm:text-4xl mt-3">Delivery that fits your day.</h2>
             <ul className="mt-5 space-y-3 text-[15px] text-white/80">

@@ -40,7 +40,7 @@ export function Navbar() {
           </nav>
           <div className="ml-auto flex items-center gap-1.5">
             <select aria-label="Language" value={lang} onChange={(e) => setLang(e.target.value as any)}
-              className="border border-line rounded-lg px-2 py-1.5 text-sm bg-white font-medium">
+              className="border border-line rounded-lg px-1.5 sm:px-2 py-1.5 text-sm bg-white font-medium max-w-[92px] sm:max-w-none">
               <option value="en">English</option>
               <option value="ta">தமிழ்</option>
             </select>
@@ -73,6 +73,7 @@ export function Navbar() {
             {user.role === 'buyer' && <Link to="/cart">{t('nav.cart')}{count > 0 && ` (${count})`}</Link>}
             <Link to="/orders">{t('nav.orders')}</Link>
             <Link to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'}>{t('nav.dashboard')}</Link>
+            <Link to="/notifications">{t('nav.notifications')}</Link>
             <Link to="/profile"><UserIcon size={14} className="inline" /> Profile</Link>
           </div>
         )}
@@ -87,10 +88,22 @@ export function Navbar() {
               <button onClick={() => setOpen(false)} aria-label="Close menu" className="p-2 rounded-lg hover:bg-cream"><X size={18} /></button>
             </div>
             <nav className="space-y-1 font-semibold" aria-label="Mobile">
-              {[['/', 'Home'], ['/market', t('nav.explore')], ['/#how', 'How It Works'], ['/#farmers', 'For Farmers'], ['/orders', 'Track order'], ['/logistics', 'Logistics']].map(([to, label]) => (
+              {[['/', 'Home'], ['/market', t('nav.explore')], ['/#how', 'How It Works'], ['/#farmers', 'For Farmers'], ['/orders', 'Track order']].map(([to, label]) => (
                 <Link key={to + label} to={to} onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">{label}</Link>
               ))}
             </nav>
+            {user && (
+              <nav className="mt-4 pt-4 border-t border-line space-y-1 font-semibold" aria-label="Account">
+                <Link to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'} onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">{t('nav.dashboard')}</Link>
+                <Link to="/orders" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">{t('nav.orders')}</Link>
+                <Link to="/notifications" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">{t('nav.notifications')}</Link>
+                <Link to="/profile" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">Profile</Link>
+                {(user.role === 'seller' || user.role === 'admin') && (
+                  <Link to="/logistics" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">Logistics</Link>
+                )}
+                <button onClick={() => { logout(); setOpen(false); nav('/') }} className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-cream text-red-600">{t('nav.logout')}</button>
+              </nav>
+            )}
           </div>
         </div>
       )}

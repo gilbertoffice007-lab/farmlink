@@ -19,7 +19,7 @@ export default function Insights() {
           <h2 className="font-bold">Most ordered products</h2>
           <div className="h-64 mt-2">
             <ResponsiveContainer><BarChart data={(data.top_products || []).slice(0, 8)} layout="vertical">
-              <XAxis type="number" tick={{ fontSize: 10 }} /><YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 10 }} /><Tooltip />
+              <XAxis type="number" tick={{ fontSize: 10 }} /><YAxis type="category" dataKey="name" width={88} tick={{ fontSize: 10 }} /><Tooltip />
               <Bar dataKey="qty" fill="#28784A" radius={[0, 6, 6, 0]} />
             </BarChart></ResponsiveContainer>
           </div>
@@ -38,7 +38,7 @@ export default function Insights() {
         <h2 className="font-bold">Restock suggestions</h2>
         {(data.restock_suggestions || []).length === 0 && <p className="text-sm text-muted mt-1">Stock looks healthy against current demand.</p>}
         {(data.restock_suggestions || []).map((s: any) => (
-          <div key={s.product} className="flex justify-between text-sm py-2 border-b border-line last:border-0">
+          <div key={s.product} className="flex flex-wrap justify-between gap-x-3 gap-y-0.5 text-sm py-2 border-b border-line last:border-0">
             <span><b>{s.product}</b> — {s.stock} left, {s.ordered_qty} ordered</span><span className="text-farm font-semibold">{s.advice}</span>
           </div>
         ))}

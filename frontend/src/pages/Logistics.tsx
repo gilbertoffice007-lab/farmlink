@@ -35,7 +35,7 @@ export default function Logistics() {
       {(data.groups || []).length === 0 && <p className="text-sm text-muted mt-2">No combinable lanes right now — each order ships on its own.</p>}
       {(data.groups || []).map((g: any, i: number) => (
         <div key={i} className="card card-hover p-5 mt-3">
-          <div className="font-bold text-lg">{g.pickup} <span className="text-farm">→</span> {g.delivery} <span className="badge bg-farm-light text-farm ml-1">{g.orders.length} orders</span></div>
+          <div className="font-bold text-lg leading-snug">{g.pickup} <span className="text-farm">→</span> {g.delivery} <span className="badge bg-farm-light text-farm ml-1">{g.orders.length} orders</span></div>
           <p className="text-sm text-muted mt-0.5">{g.suggestion}</p>
           <div className="flex flex-wrap gap-2 mt-3">
             {g.orders.map((o: any) => (
@@ -53,7 +53,7 @@ export default function Logistics() {
       <h2 className="font-display font-bold text-xl mt-7">Single-lane orders</h2>
       <div className="space-y-2 mt-2">
         {(data.ungrouped || []).map((o: any) => (
-          <label key={o.order_id} className="card p-3.5 text-sm flex gap-3 items-center cursor-pointer has-[:checked]:border-farm transition">
+          <label key={o.order_id} className="card p-3.5 text-sm flex flex-wrap items-center gap-x-3 gap-y-1.5 cursor-pointer has-[:checked]:border-farm transition">
             <input type="checkbox" checked={selected.includes(o.order_id)} onChange={() => toggle(o.order_id)} className="accent-[#28784A]" />
             <Link to={`/orders/${o.order_id}`} className="font-bold hover:text-farm">{o.order_number}</Link>
             <span className="text-muted">{o.pickup_city} → {o.delivery_city}</span>
@@ -65,7 +65,7 @@ export default function Logistics() {
 
       {runOrders.length > 0 && (
         <div className="card print-card p-6 mt-8">
-          <div className="flex justify-between items-start">
+          <div className="flex flex-wrap justify-between items-start gap-3">
             <div>
               <h2 className="font-display font-black text-2xl">Delivery run sheet</h2>
               <p className="text-sm text-muted">Run DR-{new Date().toISOString().slice(0, 10)} · {runOrders.length} stops · Nearest-neighbour order is a suggestion — plan your own route.</p>

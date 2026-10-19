@@ -73,7 +73,7 @@ export default function Cart() {
           <div className="text-sm text-muted flex items-center gap-1.5"><Truck size={14} /> Subtotal · delivery calculated at checkout</div>
           <div className="text-3xl font-display font-black">₹{sub.toFixed(2)}</div>
         </div>
-        <Link to="/checkout" className="btn-primary !px-7 !py-3">Checkout <ArrowRight size={17} /></Link>
+        <Link to="/checkout" className="btn-primary !px-7 !py-3 w-full sm:w-auto justify-center">Checkout <ArrowRight size={17} /></Link>
       </div>
     </div>
   )

@@ -96,7 +96,7 @@ export default function OrderDetails() {
 
       {/* Timeline */}
       {!terminal && (
-        <ol className="card p-6 mt-4" aria-label="Delivery tracking timeline">
+        <ol className="card p-4 sm:p-6 mt-4" aria-label="Delivery tracking timeline">
           {STEPS.map((s, i) => {
             const doneStep = idx >= 0 && i <= idx
             const current = i === idx
@@ -129,9 +129,9 @@ export default function OrderDetails() {
       <div className="card p-5 mt-4">
         <h2 className="font-display font-bold text-lg">Items</h2>
         {o.items.map((i: any) => (
-          <div key={i.id} className="flex justify-between text-sm py-2 border-b border-line/70 last:border-0">
-            <span>{i.product_name_snapshot} × {i.quantity} {i.unit_snapshot} @ ₹{Number(i.unit_price_snapshot).toFixed(2)}</span>
-            <b>₹{Number(i.line_total).toFixed(2)}</b>
+          <div key={i.id} className="flex justify-between gap-3 text-sm py-2 border-b border-line/70 last:border-0">
+            <span className="min-w-0">{i.product_name_snapshot} × {i.quantity} {i.unit_snapshot} @ ₹{Number(i.unit_price_snapshot).toFixed(2)}</span>
+            <b className="shrink-0">₹{Number(i.line_total).toFixed(2)}</b>
           </div>
         ))}
         <div className="text-sm mt-3 space-y-1">

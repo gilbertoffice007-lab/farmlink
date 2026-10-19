@@ -76,8 +76,8 @@ export default function AdminDashboard() {
         <div className="space-y-2 mt-5">
           {(pending.data || []).length === 0 && <p className="text-sm text-muted">No pending verifications.</p>}
           {(pending.data || []).map((s: any) => (
-            <div key={s.profile_id} className="card p-4 flex items-center gap-3 text-sm">
-              <div className="flex-1"><b>{s.farm_name}</b> — {s.name} · {s.city}, {s.state} <StatusBadge status={s.status} /></div>
+            <div key={s.profile_id} className="card p-4 flex flex-wrap items-center gap-2 text-sm">
+              <div className="flex-1 min-w-44"><b>{s.farm_name}</b> — {s.name} · {s.city}, {s.state} <StatusBadge status={s.status} /></div>
               <button onClick={() => act.mutate({ url: `/admin/sellers/${s.user_id}/approve` })} className="btn-primary !px-3 !py-1.5 text-sm">Approve</button>
               <button onClick={() => act.mutate({ url: `/admin/sellers/${s.user_id}/reject` })} className="btn-secondary !px-3 !py-1.5 text-sm">Reject</button>
             </div>
@@ -88,8 +88,8 @@ export default function AdminDashboard() {
       {tab === 'products' && (
         <div className="space-y-2 mt-5">
           {(aprods.data || []).map((p: any) => (
-            <div key={p.id} className="card p-4 flex items-center gap-3 text-sm">
-              <div className="flex-1"><b>{p.name}</b> · {p.seller} · ₹{p.price} <StatusBadge status={p.status} /></div>
+            <div key={p.id} className="card p-4 flex flex-wrap items-center gap-2 text-sm">
+              <div className="flex-1 min-w-44"><b>{p.name}</b> · {p.seller} · ₹{p.price} <StatusBadge status={p.status} /></div>
               {['active', 'suspended', 'inactive'].map((s) => (
                 <button key={s} onClick={() => patch.mutate({ url: `/admin/products/${p.id}/moderation`, body: { status: s } })}
                   className="btn-secondary !px-2.5 !py-1 text-xs capitalize">{s}</button>
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
       {tab === 'orders' && (
         <div className="space-y-2 mt-5">
           {(aorders.data || []).slice(0, 100).map((o: any) => (
-            <div key={o.id} className="card p-3 text-sm flex gap-3 items-center"><b>{o.order_number}</b><StatusBadge status={o.status} /><span>₹{o.total_amount}</span><span className="text-muted">buyer {o.buyer_id} → seller {o.seller_id}</span></div>
+            <div key={o.id} className="card p-3 text-sm flex flex-wrap items-center gap-x-3 gap-y-1"><b>{o.order_number}</b><StatusBadge status={o.status} /><span>₹{o.total_amount}</span><span className="text-muted">buyer {o.buyer_id} → seller {o.seller_id}</span></div>
           ))}
         </div>
       )}

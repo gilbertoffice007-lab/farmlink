@@ -49,7 +49,7 @@ export default function ProductDetails() {
       </nav>
       <div className="grid lg:grid-cols-2 gap-8">
         <div className="card overflow-hidden h-fit lg:sticky lg:top-24">
-          <div className="img-frame h-[420px]">
+          <div className="img-frame h-56 sm:h-80 lg:h-[420px]">
             {p.image_url
               ? <img src={p.image_url} alt={p.name} onError={imgFallback} />
               : <div className="w-full h-full grid place-items-center"><Sprout size={72} className="text-leaf" /></div>}
@@ -63,12 +63,12 @@ export default function ProductDetails() {
         </div>
 
         <div>
-          <div className="flex items-center gap-2 text-sm text-muted">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
             <VegMark />
             <span className="inline-flex items-center gap-1"><MapPin size={13} />{p.location}</span>
             <span>·</span><Stars avg={p.rating_avg} count={p.rating_count} />
           </div>
-          <h1 className="font-display font-black text-4xl text-forest mt-2">{p.name}</h1>
+          <h1 className="font-display font-black text-3xl sm:text-4xl text-forest mt-2">{p.name}</h1>
           <Link to={`/market`} className="text-sm text-muted hover:text-farm inline-flex items-center gap-1.5 mt-1.5">
             <Store size={14} /> Sold by <b>{p.farm_name || p.seller_name}</b>
           </Link>

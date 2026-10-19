@@ -101,7 +101,7 @@ export default function BuyerDashboard() {
         <div>
           <h2 className="font-display font-bold text-xl flex items-center gap-2"><Heart size={18} className="text-farm" /> Your wishlist</h2>
           {(Array.isArray(wishlist) ? wishlist : []).length === 0 && <p className="text-sm text-muted mt-2">Tap the heart on any product to save it here.</p>}
-          <div className="grid grid-cols-2 gap-3 mt-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
             {(Array.isArray(wishlist) ? wishlist : []).slice(0, 4).map((p: any) => (
               <ProductCard key={p.id} p={p} onAdd={(x) => cartMut.mutate(x)} onWish={(x) => wishMut.mutate(x.id)} adding={cartMut.isPending} />
             ))}
@@ -110,14 +110,14 @@ export default function BuyerDashboard() {
         <div>
           <h2 className="font-display font-bold text-xl flex items-center gap-2"><Sparkles size={18} className="text-farm" /> Recommended for you</h2>
           <p className="text-xs text-muted mt-1">Based on what's popular in categories you browse.</p>
-          <div className="grid grid-cols-2 gap-3 mt-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
             {(Array.isArray(recommended) ? recommended : []).map((p: any) => (
               <ProductCard key={p.id} p={p} onAdd={(x) => cartMut.mutate(x)}
                 onWish={(x) => api.post(`/wishlist/${x.id}`).then(() => { queryClient.invalidateQueries({ queryKey: ['wish'] }); toast.success('Saved') }).catch((e) => toast.error(apiError(e)))}
                 adding={cartMut.isPending} />
             ))}
             {(!recommended || recommended.length === 0) && (
-              <div className="col-span-2 card p-5 text-sm text-muted flex items-center gap-2"><PackageSearch size={16} /> Browse the marketplace and picks will appear here.</div>
+              <div className="sm:col-span-2 card p-5 text-sm text-muted flex items-center gap-2"><PackageSearch size={16} /> Browse the marketplace and picks will appear here.</div>
             )}
           </div>
         </div>
