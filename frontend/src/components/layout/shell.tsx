@@ -38,7 +38,7 @@ export function Navbar() {
             <a className="hover:text-farm transition" href="/#farmers">For Farmers</a>
             {user && <Link className="hover:text-farm transition inline-flex items-center gap-1" to="/orders"><Truck size={15} /> Track order</Link>}
           </nav>
-          <div className="ml-auto flex items-center gap-0.5 sm:gap-1.5 shrink-0">
+          <div className="ml-auto hidden sm:flex items-center gap-0.5 sm:gap-1.5 shrink-0">
             <select aria-label="Language" value={lang} onChange={(e) => setLang(e.target.value as any)}
               className="hidden sm:block border border-line rounded-lg px-2 py-1.5 text-sm bg-white font-medium">
               <option value="en">English</option>
@@ -54,7 +54,7 @@ export function Navbar() {
                 )}
                 <Link to="/notifications" aria-label="Notifications" className="relative p-2 rounded-xl hover:bg-cream transition"><Bell size={20} /></Link>
                 <Link to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'}
-                  className="hidden sm:inline-flex btn-secondary !px-3 !py-1.5 text-sm">
+                  className="hidden md:inline-flex btn-secondary !px-3 !py-1.5 text-sm">
                   {user.role === 'admin' ? <ShieldCheck size={16} /> : <LayoutDashboard size={16} />} {t('nav.dashboard')}
                 </Link>
                 <button onClick={() => { logout(); nav('/') }} className="p-2 rounded-xl hover:bg-cream transition hidden sm:block" aria-label="Log out"><LogOut size={18} /></button>
@@ -67,15 +67,6 @@ export function Navbar() {
             )}
           </div>
         </div>
-        {user && (
-          <div className="md:hidden border-t border-line/70 px-4 py-2.5 flex gap-5 text-sm font-semibold whitespace-nowrap overflow-x-auto no-print" style={{ scrollbarWidth: 'none' }}>
-            <Link className="shrink-0 py-0.5" to="/market">{t('nav.market')}</Link>
-            {user.role === 'buyer' && <Link className="shrink-0 py-0.5" to="/cart">{t('nav.cart')}{count > 0 && ` (${count})`}</Link>}
-            <Link className="shrink-0 py-0.5" to="/orders">{t('nav.orders')}</Link>
-            <Link className="shrink-0 py-0.5" to="/notifications">{t('nav.notifications')}</Link>
-            <Link className="shrink-0 py-0.5 inline-flex items-center gap-1" to="/profile"><UserIcon size={14} /> Profile</Link>
-          </div>
-        )}
       </header>
 
       {open && (
@@ -86,14 +77,26 @@ export function Navbar() {
               <span className="font-display font-bold text-lg text-forest">FarmLink</span>
               <button onClick={() => setOpen(false)} aria-label="Close menu" className="p-2 rounded-lg hover:bg-cream"><X size={18} /></button>
             </div>
+            {!user && (
+              <div className="flex gap-2 mb-4">
+                <Link to="/login" onClick={() => setOpen(false)} className="btn-secondary flex-1 !py-2.5 text-sm justify-center">{t('nav.login')}</Link>
+                <Link to="/register" onClick={() => setOpen(false)} className="btn-primary flex-1 !py-2.5 text-sm justify-center">{t('nav.register')}</Link>
+              </div>
+            )}
             <nav className="space-y-1 font-semibold" aria-label="Mobile">
-              {[['/', 'Home'], ['/market', t('nav.explore')], ['/#how', 'How It Works'], ['/#farmers', 'For Farmers'], ['/orders', 'Track order']].map(([to, label]) => (
+              {[['/', 'Home'], ['/market', t('nav.explore')], ['/#how', 'How It Works'], ['/#farmers', 'For Farmers']].map(([to, label]) => (
                 <Link key={to + label} to={to} onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">{label}</Link>
               ))}
             </nav>
             {user && (
               <nav className="mt-4 pt-4 border-t border-line space-y-1 font-semibold" aria-label="Account">
                 <Link to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'} onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">{t('nav.dashboard')}</Link>
+                {user.role === 'buyer' && (
+                  <Link to="/cart" onClick={() => setOpen(false)} className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-cream">
+                    <span>{t('nav.cart')}</span>
+                    {count > 0 && <span className="badge bg-farm text-white !text-[11px]">{count}</span>}
+                  </Link>
+                )}
                 <Link to="/orders" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">{t('nav.orders')}</Link>
                 <Link to="/notifications" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">{t('nav.notifications')}</Link>
                 <Link to="/profile" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">Profile</Link>
