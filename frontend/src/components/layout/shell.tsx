@@ -19,12 +19,6 @@ export function Navbar() {
 
   return (
     <>
-      <div className="bg-forest text-white/90 text-xs no-print">
-        <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-center gap-2 text-center">
-          <Truck size={13} className="text-lime shrink-0" />
-          <span><b className="text-lime">FREE delivery</b> on orders ₹499+ · Farm pickup always free</span>
-        </div>
-      </div>
       <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-line/80 shadow-[0_2px_20px_rgba(22,61,43,.05)]">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-2 sm:gap-3">
           <button className="md:hidden p-2 -ml-2 rounded-lg hover:bg-cream shrink-0" aria-label="Open menu" onClick={() => setOpen(true)}><Menu size={20} /></button>
