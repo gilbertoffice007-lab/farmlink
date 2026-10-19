@@ -57,7 +57,7 @@ export function Navbar() {
                   className="hidden sm:inline-flex btn-secondary !px-3 !py-1.5 text-sm">
                   {user.role === 'admin' ? <ShieldCheck size={16} /> : <LayoutDashboard size={16} />} {t('nav.dashboard')}
                 </Link>
-                <button onClick={() => { logout(); nav('/') }} className="p-2 rounded-xl hover:bg-cream transition" aria-label="Log out"><LogOut size={18} /></button>
+                <button onClick={() => { logout(); nav('/') }} className="p-2 rounded-xl hover:bg-cream transition hidden sm:block" aria-label="Log out"><LogOut size={18} /></button>
               </>
             ) : (
               <>
