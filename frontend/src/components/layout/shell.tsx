@@ -38,7 +38,7 @@ export function Navbar() {
             <a className="hover:text-farm transition" href="/#farmers">For Farmers</a>
             {user && <Link className="hover:text-farm transition inline-flex items-center gap-1" to="/orders"><Truck size={15} /> Track order</Link>}
           </nav>
-          <div className="ml-auto hidden sm:flex items-center gap-0.5 sm:gap-1.5 shrink-0">
+          <div className="ml-auto flex items-center gap-0.5 sm:gap-1.5 shrink-0">
             <select aria-label="Language" value={lang} onChange={(e) => setLang(e.target.value as any)}
               className="hidden sm:block border border-line rounded-lg px-2 py-1.5 text-sm bg-white font-medium">
               <option value="en">English</option>
@@ -47,22 +47,27 @@ export function Navbar() {
             {user ? (
               <>
                 {user.role === 'buyer' && (
-                  <Link to="/cart" aria-label={`Cart, ${count} items`} className="relative p-2 rounded-xl hover:bg-cream transition">
+                  <Link to="/cart" aria-label={`Cart, ${count} items`} className="relative p-2 rounded-xl hover:bg-cream transition hidden sm:block">
                     <ShoppingBasket size={20} />
                     {count > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-5 h-5 px-1 rounded-full bg-farm text-white text-[11px] font-bold grid place-items-center">{count}</span>}
                   </Link>
                 )}
                 <Link to="/notifications" aria-label="Notifications" className="relative p-2 rounded-xl hover:bg-cream transition"><Bell size={20} /></Link>
                 <Link to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'}
-                  className="hidden md:inline-flex btn-secondary !px-3 !py-1.5 text-sm">
+                  aria-label={t('nav.dashboard')}
+                  className="sm:hidden p-2 rounded-xl hover:bg-cream transition text-forest">
+                  {user.role === 'admin' ? <ShieldCheck size={20} /> : <LayoutDashboard size={20} />}
+                </Link>
+                <Link to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'}
+                  className="hidden sm:inline-flex btn-secondary !px-3 !py-1.5 text-sm">
                   {user.role === 'admin' ? <ShieldCheck size={16} /> : <LayoutDashboard size={16} />} {t('nav.dashboard')}
                 </Link>
                 <button onClick={() => { logout(); nav('/') }} className="p-2 rounded-xl hover:bg-cream transition hidden sm:block" aria-label="Log out"><LogOut size={18} /></button>
               </>
             ) : (
               <>
-                <Link to="/login" className="text-sm font-semibold px-2 sm:px-3 py-2 hover:text-farm transition whitespace-nowrap">{t('nav.login')}</Link>
-                <Link to="/register" className="btn-primary !px-3 sm:!px-4 !py-2 text-sm whitespace-nowrap">{t('nav.register')}</Link>
+                <Link to="/login" className="hidden sm:inline-flex text-sm font-semibold px-3 py-2 hover:text-farm transition whitespace-nowrap items-center">{t('nav.login')}</Link>
+                <Link to="/register" className="hidden sm:inline-flex btn-primary !px-4 !py-2 text-sm whitespace-nowrap">{t('nav.register')}</Link>
               </>
             )}
           </div>
