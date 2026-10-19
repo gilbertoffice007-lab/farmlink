@@ -30,7 +30,7 @@ export function Navbar() {
           <button className="md:hidden p-2 -ml-2 rounded-lg hover:bg-cream shrink-0" aria-label="Open menu" onClick={() => setOpen(true)}><Menu size={20} /></button>
           <Link to="/" className="flex items-center gap-2 font-extrabold text-forest text-lg min-w-0" aria-label="FarmLink home">
             <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-farm to-forest text-white grid place-items-center shadow-[0_6px_16px_rgba(40,120,74,.35)] shrink-0"><Leaf size={20} /></span>
-            <span className="font-display text-[22px] tracking-tight hidden sm:inline">FarmLink</span>
+            <span className="font-display text-[18px] sm:text-[22px] tracking-tight whitespace-nowrap">FarmLink</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-[15px] font-medium ml-5" aria-label="Primary">
             <Link className="hover:text-farm transition" to="/market">{t('nav.explore')}</Link>
@@ -38,9 +38,9 @@ export function Navbar() {
             <a className="hover:text-farm transition" href="/#farmers">For Farmers</a>
             {user && <Link className="hover:text-farm transition inline-flex items-center gap-1" to="/orders"><Truck size={15} /> Track order</Link>}
           </nav>
-          <div className="ml-auto flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <div className="ml-auto flex items-center gap-0.5 sm:gap-1.5 shrink-0">
             <select aria-label="Language" value={lang} onChange={(e) => setLang(e.target.value as any)}
-              className="border border-line rounded-lg px-1.5 sm:px-2 py-1.5 text-sm bg-white font-medium max-w-[88px] sm:max-w-none">
+              className="hidden sm:block border border-line rounded-lg px-2 py-1.5 text-sm bg-white font-medium">
               <option value="en">English</option>
               <option value="ta">தமிழ்</option>
             </select>
@@ -52,7 +52,7 @@ export function Navbar() {
                     {count > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-5 h-5 px-1 rounded-full bg-farm text-white text-[11px] font-bold grid place-items-center">{count}</span>}
                   </Link>
                 )}
-                <Link to="/notifications" aria-label="Notifications" className="p-2 rounded-xl hover:bg-cream transition hidden sm:block"><Bell size={20} /></Link>
+                <Link to="/notifications" aria-label="Notifications" className="relative p-2 rounded-xl hover:bg-cream transition"><Bell size={20} /></Link>
                 <Link to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'}
                   className="hidden sm:inline-flex btn-secondary !px-3 !py-1.5 text-sm">
                   {user.role === 'admin' ? <ShieldCheck size={16} /> : <LayoutDashboard size={16} />} {t('nav.dashboard')}
@@ -68,13 +68,13 @@ export function Navbar() {
           </div>
         </div>
         {user && (
-          <div className="md:hidden border-t border-line/70 px-4 py-2 flex gap-4 text-sm font-medium overflow-x-auto no-print">
-            <Link to="/market">{t('nav.market')}</Link>
-            {user.role === 'buyer' && <Link to="/cart">{t('nav.cart')}{count > 0 && ` (${count})`}</Link>}
-            <Link to="/orders">{t('nav.orders')}</Link>
-            <Link to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'}>{t('nav.dashboard')}</Link>
-            <Link to="/notifications">{t('nav.notifications')}</Link>
-            <Link to="/profile"><UserIcon size={14} className="inline" /> Profile</Link>
+          <div className="md:hidden border-t border-line/70 px-4 py-2.5 flex gap-5 text-sm font-semibold whitespace-nowrap overflow-x-auto no-print" style={{ scrollbarWidth: 'none' }}>
+            <Link className="shrink-0 py-0.5" to="/market">{t('nav.market')}</Link>
+            {user.role === 'buyer' && <Link className="shrink-0 py-0.5" to="/cart">{t('nav.cart')}{count > 0 && ` (${count})`}</Link>}
+            <Link className="shrink-0 py-0.5" to="/orders">{t('nav.orders')}</Link>
+            <Link className="shrink-0 py-0.5" to={user.role === 'seller' ? '/seller' : user.role === 'admin' ? '/admin' : '/buyer'}>{t('nav.dashboard')}</Link>
+            <Link className="shrink-0 py-0.5" to="/notifications">{t('nav.notifications')}</Link>
+            <Link className="shrink-0 py-0.5 inline-flex items-center gap-1" to="/profile"><UserIcon size={14} /> Profile</Link>
           </div>
         )}
       </header>
@@ -104,6 +104,14 @@ export function Navbar() {
                 <button onClick={() => { logout(); setOpen(false); nav('/') }} className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-cream text-red-600">{t('nav.logout')}</button>
               </nav>
             )}
+            <div className="mt-4 pt-4 border-t border-line">
+              <label className="block text-xs font-bold uppercase tracking-wide text-muted px-3 mb-2" htmlFor="drawer-lang">Language</label>
+              <select id="drawer-lang" aria-label="Language" value={lang} onChange={(e) => setLang(e.target.value as any)}
+                className="w-full border border-line rounded-xl px-3 py-2.5 text-sm bg-white font-medium">
+                <option value="en">English</option>
+                <option value="ta">தமிழ்</option>
+              </select>
+            </div>
           </div>
         </div>
       )}
