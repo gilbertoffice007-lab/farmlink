@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { ShoppingBasket, Heart, Truck, Bell, MapPin, ArrowRight, PackageSearch, Sparkles } from 'lucide-react'
+import { ShoppingBasket, Heart, Truck, Bell, MapPin, ArrowRight, PackageSearch, Sparkles, Leaf, Mic } from 'lucide-react'
 import { api, apiError } from '../lib/api'
 import { useAuth } from '../lib/auth-context'
 import { queryClient } from '../lib/query-client'
@@ -18,6 +18,8 @@ export default function BuyerDashboard() {
   const { data: notifs } = useQuery({ queryKey: ['notifs'], queryFn: async () => (await api.get('/notifications')).data })
   const { data: cart } = useQuery({ queryKey: ['cart'], queryFn: async () => (await api.get('/cart')).data })
   const { data: addrs } = useQuery({ queryKey: ['addrs'], queryFn: async () => (await api.get('/addresses')).data })
+  const { data: rescueOffers } = useQuery({ queryKey: ['rescue-offers'], queryFn: async () => (await api.get('/rescue/offers/mine')).data, retry: false })
+  const { data: shipments } = useQuery({ queryKey: ['shipments-mine'], queryFn: async () => (await api.get('/transport/shipments/mine')).data, retry: false })
 
   const recIds: string[] = dash?.recommended_ids || []
   const { data: recommended } = useQuery({
@@ -68,6 +70,21 @@ export default function BuyerDashboard() {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="grid sm:grid-cols-3 gap-3 mt-4">
+        <Link to="/rescue" className="card card-hover p-4 flex items-center gap-3">
+          <span className="w-10 h-10 rounded-xl bg-farm-light text-farm grid place-items-center shrink-0"><Leaf size={19} /></span>
+          <div className="min-w-0"><div className="font-bold">Harvest Rescue</div><div className="text-xs text-muted">{Array.isArray(rescueOffers) && rescueOffers.length ? `${rescueOffers.filter((o: any) => o.status === 'pending').length} pending rescue offer${rescueOffers.filter((o: any) => o.status === 'pending').length === 1 ? '' : 's'}` : 'Buy surplus produce near its deadline'}</div></div>
+        </Link>
+        <Link to="/transport" className="card card-hover p-4 flex items-center gap-3">
+          <span className="w-10 h-10 rounded-xl bg-farm-light text-farm grid place-items-center shrink-0"><Truck size={19} /></span>
+          <div className="min-w-0"><div className="font-bold">Shared Transport</div><div className="text-xs text-muted">{Array.isArray(shipments) && shipments.filter((s: any) => s.is_participant).length ? `${shipments.filter((s: any) => s.is_participant).length} shared load${shipments.filter((s: any) => s.is_participant).length === 1 ? '' : 's'} joined` : 'Find space on a shared load'}</div></div>
+        </Link>
+        <Link to="/voice" className="card card-hover p-4 flex items-center gap-3">
+          <span className="w-10 h-10 rounded-xl bg-farm-light text-farm grid place-items-center shrink-0"><Mic size={19} /></span>
+          <div className="min-w-0"><div className="font-bold">Voice Assistant</div><div className="text-xs text-muted">Search and hear order updates</div></div>
+        </Link>
       </div>
 
       {/* Active orders with live progress */}

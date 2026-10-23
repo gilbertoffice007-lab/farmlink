@@ -7,6 +7,7 @@ import { api, apiError } from '../lib/api'
 import { useAuth } from '../lib/auth-context'
 import { queryClient } from '../lib/query-client'
 import { ErrorBox, StatusBadge, Stars } from '../components/common/ui'
+import { SpeakButton } from '../components/voice/SpeakButton'
 
 const STEPS = [
   { id: 'placed', label: 'Order placed', hint: 'We notified the farmer' },
@@ -58,11 +59,22 @@ export default function OrderDetails() {
   const histByStatus: Record<string, any> = {}
   ;(o.history || []).forEach((h: any) => { histByStatus[h.new_status] = h })
 
+  const speech = [
+    `Order ${o.order_number}. Status ${o.status}.`,
+    `${o.fulfillment_type === 'pickup' ? 'Farm pickup' : 'Home delivery'}.`,
+    `Estimated ${o.fulfillment_type === 'pickup' ? 'pickup' : 'delivery'} ${fmt(o.estimated_delivery)}.`,
+    o.delivery_slot ? `Time slot ${SLOT_LABELS[o.delivery_slot] || o.delivery_slot}.` : '',
+    `Total ${Number(o.total_amount).toFixed(2)} rupees.`,
+    `Items: ${(o.items || []).map((i: any) => `${i.product_name_snapshot}, ${i.quantity} ${i.unit_snapshot}`).join('; ')}.`,
+    o.source === 'harvest_rescue' ? 'This order came from a Harvest Rescue Exchange offer.' : '',
+  ].filter(Boolean).join(' ')
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="flex items-center gap-3 flex-wrap">
         <h1 className="font-display font-black text-3xl text-forest">{o.order_number}</h1>
         <StatusBadge status={o.status} />
+        <SpeakButton text={speech} label="Read order" compact className="ml-auto" />
       </div>
       <p className="text-sm text-muted mt-1">
         Buyer: {o.buyer_name} · Seller: {o.seller_name} · {o.fulfillment_type === 'pickup' ? 'Farm pickup' : 'Home delivery'} · {o.payment_method === 'cod' ? 'Cash on Delivery' : 'Simulated online (demo)'}

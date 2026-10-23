@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Leaf, ShoppingBasket, Bell, LogOut, LayoutDashboard, ShieldCheck, Menu, X, Truck, User as UserIcon } from 'lucide-react'
+import { Leaf, ShoppingBasket, Bell, LogOut, LayoutDashboard, ShieldCheck, Menu, X, Truck, User as UserIcon, Mic } from 'lucide-react'
 import { useAuth } from '../../lib/auth-context'
 import { useLang } from '../../lib/i18n'
 import { api } from '../../lib/api'
@@ -31,6 +31,12 @@ export function Navbar() {
             <a className="hover:text-farm transition" href="/#how">How It Works</a>
             <a className="hover:text-farm transition" href="/#farmers">For Farmers</a>
             {user && <Link className="hover:text-farm transition inline-flex items-center gap-1" to="/orders"><Truck size={15} /> Track order</Link>}
+            {user && user.role !== 'admin' && (
+              <Link className="hidden lg:inline-flex hover:text-farm transition items-center gap-1" to="/transport"><Truck size={15} /> Shared load</Link>
+            )}
+            {user && user.role !== 'admin' && (
+              <Link className="hidden lg:inline-flex hover:text-farm transition items-center gap-1" to={user.role === 'seller' ? '/rescue/manage' : '/rescue'}><Leaf size={15} /> Rescue</Link>
+            )}
           </nav>
           <div className="ml-auto flex items-center gap-0.5 sm:gap-1.5 shrink-0">
             <select aria-label="Language" value={lang} onChange={(e) => setLang(e.target.value as any)}
@@ -93,6 +99,13 @@ export function Navbar() {
                   </Link>
                 )}
                 <Link to="/orders" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">{t('nav.orders')}</Link>
+                {user.role !== 'admin' && (
+                  <Link to={user.role === 'seller' ? '/rescue/manage' : '/rescue'} onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-cream"><Leaf size={16} className="text-farm" /> Harvest Rescue</Link>
+                )}
+                {user.role !== 'admin' && (
+                  <Link to="/transport" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-cream"><Truck size={16} className="text-farm" /> Shared Transport</Link>
+                )}
+                <Link to="/voice" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-cream"><Mic size={16} className="text-farm" /> Voice Assistant</Link>
                 <Link to="/notifications" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">{t('nav.notifications')}</Link>
                 <Link to="/profile" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-xl hover:bg-cream">Profile</Link>
                 {(user.role === 'seller' || user.role === 'admin') && (

@@ -6,13 +6,16 @@ import './index.css'
 import { queryClient } from './lib/query-client'
 import { AuthProvider } from './lib/auth-context'
 import { LangProvider } from './lib/i18n'
+import { VoiceProvider } from './lib/voice-settings'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <LangProvider>
-          <App />
+          <VoiceProvider>
+            <App />
+          </VoiceProvider>
         </LangProvider>
       </AuthProvider>
     </QueryClientProvider>

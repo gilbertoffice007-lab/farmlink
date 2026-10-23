@@ -7,6 +7,7 @@ import { api, apiError } from '../lib/api'
 import { useAuth } from '../lib/auth-context'
 import { Empty, ErrorBox, StatusBadge, Stars, VegMark } from '../components/common/ui'
 import { Price } from '../components/marketplace/ProductCard'
+import { SpeakButton } from '../components/voice/SpeakButton'
 import { imgFallback } from '../lib/images'
 
 export default function ProductDetails() {
@@ -42,6 +43,14 @@ export default function ProductDetails() {
   if (isError || !p) return <div className="max-w-3xl mx-auto p-4"><ErrorBox message="Product not found or unavailable." onRetry={() => refetch()} /></div>
 
   const out = Number(p.available_quantity) <= 0
+  const summary = [
+    `${p.name}.`,
+    `${Number(p.price).toFixed(2)} rupees per ${p.unit}.`,
+    out ? 'Currently out of stock.' : `${p.available_quantity} ${p.unit} available, minimum order ${p.minimum_order_quantity} ${p.unit}.`,
+    `Sold by ${p.farm_name || p.seller_name}${p.location ? ` in ${p.location}` : ''}.`,
+    p.harvest_date ? `Harvest date ${p.harvest_date}.` : '',
+    p.description ? `${p.description}.` : '',
+  ].filter(Boolean).join(' ')
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <nav className="text-sm text-muted mb-4" aria-label="Breadcrumb">
@@ -68,7 +77,10 @@ export default function ProductDetails() {
             <span className="inline-flex items-center gap-1"><MapPin size={13} />{p.location}</span>
             <span>·</span><Stars avg={p.rating_avg} count={p.rating_count} />
           </div>
-          <h1 className="font-display font-black text-3xl sm:text-4xl text-forest mt-2">{p.name}</h1>
+          <div className="flex flex-wrap items-center justify-between gap-2 mt-2">
+            <h1 className="font-display font-black text-3xl sm:text-4xl text-forest">{p.name}</h1>
+            <SpeakButton text={summary} label="Read product" compact />
+          </div>
           <Link to={`/market`} className="text-sm text-muted hover:text-farm inline-flex items-center gap-1.5 mt-1.5">
             <Store size={14} /> Sold by <b>{p.farm_name || p.seller_name}</b>
           </Link>

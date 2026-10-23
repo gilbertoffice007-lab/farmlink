@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { Empty } from '../components/common/ui'
+import { SpeakButton } from '../components/voice/SpeakButton'
 
 export default function Notifications() {
   const { data } = useQuery({ queryKey: ['notifs'], queryFn: async () => (await api.get('/notifications')).data })
@@ -12,7 +13,10 @@ export default function Notifications() {
       {(!data || data.length === 0) && <div className="mt-4"><Empty title="No notifications" action={<Link to="/market" className="btn-primary">Explore produce</Link>} /></div>}
       {(Array.isArray(data) ? data : []).map((n: any) => (
         <div key={n.id} className={`card p-4 mt-2 text-sm ${n.read_at ? 'opacity-70' : ''}`}>
-          <b>{n.title}</b><p className="text-muted">{n.message}</p>
+          <div className="flex items-start justify-between gap-2">
+            <div><b>{n.title}</b><p className="text-muted">{n.message}</p></div>
+            <SpeakButton text={`${n.title}. ${n.message}`} label="Listen" compact />
+          </div>
           {!n.read_at && <button onClick={() => mark(n.id)} className="text-farm font-semibold text-xs mt-1">Mark as read</button>}
         </div>
       ))}

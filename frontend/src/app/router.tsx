@@ -17,6 +17,12 @@ import Insights from '../pages/Insights'
 import Logistics from '../pages/Logistics'
 import Notifications from '../pages/Notifications'
 import Profile from '../pages/Profile'
+import RescueBuyer from '../pages/RescueBuyer'
+import RescueSeller from '../pages/RescueSeller'
+import RescueDetails from '../pages/RescueDetails'
+import SharedTransport from '../pages/SharedTransport'
+import ShipmentDetails from '../pages/ShipmentDetails'
+import VoiceAssistant from '../pages/VoiceAssistant'
 import SellerOnboarding from '../pages/SellerOnboarding'
 import NotAllowed from '../pages/NotAllowed'
 import { RequireAuth } from '../components/common/guard'
@@ -51,6 +57,7 @@ export const router = createBrowserRouter([
       { path: '/buyer', element: <BuyerDashboard /> },
       { path: '/cart', element: <Cart /> },
       { path: '/checkout', element: <Checkout /> },
+      { path: '/rescue', element: <RescueBuyer /> },
     ]
   },
   {
@@ -61,6 +68,10 @@ export const router = createBrowserRouter([
       { path: '/notifications', element: <Notifications /> },
       { path: '/profile', element: <Profile /> },
       { path: '/insights', element: <Insights /> },
+      { path: '/rescue/:id', element: <RescueDetails /> },
+      { path: '/transport', element: <SharedTransport /> },
+      { path: '/transport/:id', element: <ShipmentDetails /> },
+      { path: '/voice', element: <VoiceAssistant /> },
     ]
   },
   {
@@ -70,6 +81,7 @@ export const router = createBrowserRouter([
       { path: '/seller', element: <SellerDashboard /> },
       { path: '/seller/products/new', element: <ProductForm /> },
       { path: '/seller/products/:id/edit', element: <ProductForm /> },
+      { path: '/rescue/manage', element: <RescueSeller /> },
     ]
   },
   {

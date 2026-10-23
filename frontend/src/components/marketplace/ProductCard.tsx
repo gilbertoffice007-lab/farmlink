@@ -36,6 +36,9 @@ export function ProductCard({ p, onAdd, onWish, adding, canBuy = true }: {
         <div className="text-xs text-muted mt-1 inline-flex items-center gap-1">
           <MapPin size={11} /> {p.farm_name || p.seller_name}{p.location ? ` · ${p.location}` : ''}
         </div>
+        {p.distance_km != null && (
+          <div className="text-[11px] text-farm font-semibold mt-0.5">~{p.distance_km} km away (straight-line estimate)</div>
+        )}
         <div className="mt-1.5"><Stars avg={p.rating_avg} count={p.rating_count} /></div>
         <div className="mt-2 flex items-end justify-between">
           <Price value={p.price} unit={p.unit} />

@@ -1,11 +1,15 @@
+import { useEffect, useRef } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import toast from 'react-hot-toast'
+import { Mic } from 'lucide-react'
 import { api, apiError } from '../lib/api'
 import { queryClient } from '../lib/query-client'
+import { parseListingDraft } from '../lib/voice-parser'
+import { VoiceInput } from '../components/voice/VoiceInput'
 import { FieldError } from '../components/common/ui'
 
 const schema = z.object({
@@ -24,12 +28,14 @@ export default function ProductForm() {
   const { id } = useParams()
   const isEdit = !!id
   const nav = useNavigate()
+  const location = useLocation()
+  const voiceApplied = useRef(false)
   const { data: cats } = useQuery({ queryKey: ['cats'], queryFn: async () => (await api.get('/categories')).data })
   const { data: existing } = useQuery({
     queryKey: ['product', id], enabled: isEdit,
     queryFn: async () => (await api.get(`/products/${id}`)).data
   })
-  const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof schema>>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema), values: existing ? {
       name: existing.name, category_id: existing.category_id ? String(existing.category_id) : '',
       description: existing.description || '', price: Number(existing.price), unit: existing.unit,
@@ -38,6 +44,30 @@ export default function ProductForm() {
       location: existing.location || '', image_url: existing.image_url || ''
     } : { unit: 'kg', minimum_order_quantity: 1 } as any
   })
+  useEffect(() => {
+    if (isEdit || voiceApplied.current) return
+    const draft = (location.state as any)?.voiceDraft
+    if (!draft) return
+    voiceApplied.current = true
+    if (draft.name) setValue('name', draft.name)
+    if (draft.quantity != null) setValue('available_quantity', draft.quantity)
+    if (draft.unit) setValue('unit', draft.unit)
+    if (draft.price != null) setValue('price', draft.price)
+    if (draft.pickupLocation) setValue('location', draft.pickupLocation)
+    toast.success('Voice details added. Review every field before publishing.')
+  }, [isEdit, location.state, setValue])
+
+  const applyVoice = (text: string) => {
+    const draft = parseListingDraft(text)
+    let applied = 0
+    if (draft.name) { setValue('name', draft.name); applied += 1 }
+    if (draft.quantity != null) { setValue('available_quantity', draft.quantity); applied += 1 }
+    if (draft.unit) { setValue('unit', draft.unit); applied += 1 }
+    if (draft.price != null) { setValue('price', draft.price); applied += 1 }
+    if (draft.pickupLocation) { setValue('location', draft.pickupLocation); applied += 1 }
+    toast(applied ? `${applied} field${applied === 1 ? '' : 's'} filled from your review. Complete the rest before publishing.` : 'No usable details were found. Fill the form manually or try again.')
+  }
+
   const mut = useMutation({
     mutationFn: async (v: any) => {
       const payload = { ...v, category_id: v.category_id ? String(v.category_id) : null, image_url: v.image_url || null }
@@ -59,7 +89,7 @@ export default function ProductForm() {
       const { data } = await api.post('/uploads/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
       const apiOrigin = new URL(api.defaults.baseURL || import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1', window.location.origin).origin
       const full = `${apiOrigin}${data.image_url}`;
-      (document.getElementById('image_url') as HTMLInputElement).value = full
+      setValue('image_url', full, { shouldDirty: true, shouldValidate: true })
       toast.success('Image uploaded')
     } catch (e: any) { toast.error(apiError(e)) }
   }
@@ -67,6 +97,15 @@ export default function ProductForm() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-extrabold text-forest">{isEdit ? 'Edit listing' : 'New listing'}</h1>
+      {!isEdit && (
+        <div className="card p-4 mt-4 border-farm/25">
+          <div className="font-bold flex items-center gap-2"><Mic size={17} className="text-farm" /> Describe the listing with your voice</div>
+          <p className="text-xs text-muted mt-1">
+            Say the produce, quantity, price and location. Only spoken values are filled; you still review and publish.
+          </p>
+          <VoiceInput className="mt-2" label="Speak listing" confirmLabel="Fill listing fields" onConfirm={applyVoice} />
+        </div>
+      )}
       <form onSubmit={handleSubmit((v) => mut.mutate(v))} className="card p-6 mt-4 space-y-4">
         <div><label className="label" htmlFor="name">Product name</label><input id="name" className="input" {...register('name')} /><FieldError msg={errors.name?.message} /></div>
         <div className="grid sm:grid-cols-2 gap-4">
@@ -76,7 +115,7 @@ export default function ProductForm() {
             </select></div>
           <div><label className="label" htmlFor="unit">Unit</label>
             <select id="unit" className="input" {...register('unit')}>
-              {['kg', 'g', 'quintal', 'dozen', 'piece', 'litre', 'bag'].map((u) => <option key={u} value={u}>{u}</option>)}
+              {['kg', 'g', 'quintal', 'ton', 'dozen', 'piece', 'litre', 'bag'].map((u) => <option key={u} value={u}>{u}</option>)}
             </select></div>
         </div>
         <div className="grid sm:grid-cols-3 gap-4">

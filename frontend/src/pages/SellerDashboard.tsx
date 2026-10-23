@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Plus, Pencil, Trash2, Store, BadgeCheck, TriangleAlert, Check, X, Search, Route, LineChart as ChartIcon, RefreshCw } from 'lucide-react'
+import { Plus, Pencil, Trash2, Store, BadgeCheck, TriangleAlert, Check, X, Search, Route, LineChart as ChartIcon, RefreshCw, Leaf, Truck, Mic } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { api, apiError } from '../lib/api'
 import { queryClient } from '../lib/query-client'
@@ -19,6 +19,8 @@ export default function SellerDashboard() {
   const orders = useQuery({ queryKey: ['orders'], queryFn: async () => (await api.get('/orders')).data, refetchInterval: 30_000, refetchOnWindowFocus: true })
   const profile = useQuery({ queryKey: ['seller-profile'], queryFn: async () => (await api.get('/sellers/me')).data, retry: false })
   const demand = useQuery({ queryKey: ['seller-demand'], queryFn: async () => (await api.get('/analytics/demand')).data, refetchInterval: 60_000 })
+  const rescueMine = useQuery({ queryKey: ['rescue-mine'], queryFn: async () => (await api.get('/rescue/listings/mine')).data, retry: false })
+  const transportMine = useQuery({ queryKey: ['shipments-mine'], queryFn: async () => (await api.get('/transport/shipments/mine')).data, retry: false })
 
   const del = useMutation({
     mutationFn: (id: string) => api.delete(`/products/${id}`),
@@ -39,6 +41,14 @@ export default function SellerDashboard() {
   const d = dash.data
   const pending = useMemo(() => (orders.data || []).filter((o: any) => o.status === 'placed'), [orders.data])
   const lowStock = useMemo(() => (demand.data?.restock_suggestions || []).slice(0, 4), [demand.data])
+  const rescueOffers = useMemo(
+    () => (Array.isArray(rescueMine.data) ? rescueMine.data.reduce((sum: number, l: any) => sum + Number(l.pending_offer_count || 0), 0) : 0),
+    [rescueMine.data],
+  )
+  const activeLoads = useMemo(
+    () => (Array.isArray(transportMine.data) ? transportMine.data.filter((s: any) => !['delivered', 'cancelled', 'failed'].includes(s.status)).length : 0),
+    [transportMine.data],
+  )
   const filteredProducts = useMemo(() => {
     const list = mine.data || []
     if (!q.trim()) return list
@@ -90,6 +100,21 @@ export default function SellerDashboard() {
             )}
           </div>
         )}
+      </div>
+
+      <div className="grid sm:grid-cols-3 gap-3 mt-4">
+        <Link to="/rescue/manage" className="card card-hover p-4 flex items-center gap-3">
+          <span className="w-10 h-10 rounded-xl bg-farm-light text-farm grid place-items-center shrink-0"><Leaf size={19} /></span>
+          <div className="min-w-0"><div className="font-bold">Harvest Rescue</div><div className="text-xs text-muted">{rescueMine.data ? `${rescueMine.data.length} listing${rescueMine.data.length === 1 ? '' : 's'} · ${rescueOffers} pending offer${rescueOffers === 1 ? '' : 's'}` : 'Sell surplus before the deadline'}</div></div>
+        </Link>
+        <Link to="/transport" className="card card-hover p-4 flex items-center gap-3">
+          <span className="w-10 h-10 rounded-xl bg-farm-light text-farm grid place-items-center shrink-0"><Truck size={19} /></span>
+          <div className="min-w-0"><div className="font-bold">Shared Transport</div><div className="text-xs text-muted">{transportMine.data ? `${activeLoads} active shared load${activeLoads === 1 ? '' : 's'}` : 'Fill spare capacity and split costs'}</div></div>
+        </Link>
+        <Link to="/voice" className="card card-hover p-4 flex items-center gap-3">
+          <span className="w-10 h-10 rounded-xl bg-farm-light text-farm grid place-items-center shrink-0"><Mic size={19} /></span>
+          <div className="min-w-0"><div className="font-bold">Voice Assistant</div><div className="text-xs text-muted">Search, list and hear updates</div></div>
+        </Link>
       </div>
 
       {/* KPI band — dark business strip, distinct from buyer */}

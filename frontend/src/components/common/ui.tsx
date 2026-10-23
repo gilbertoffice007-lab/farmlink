@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { PackageSearch, TriangleAlert, Star } from 'lucide-react'
+import { SpeakButton } from '../voice/SpeakButton'
 
 export function Empty({ title, hint, action }: { title: string; hint?: string; action?: ReactNode }) {
   return (
@@ -19,7 +20,10 @@ export function ErrorBox({ message, onRetry }: { message: string; onRetry?: () =
       <div className="text-sm">
         <div className="font-semibold text-red-800">Something needs attention</div>
         <div className="text-red-700">{message}</div>
-        {onRetry && <button onClick={onRetry} className="mt-2 underline font-semibold">Try again</button>}
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          {onRetry && <button onClick={onRetry} className="underline font-semibold min-h-9">Try again</button>}
+          <SpeakButton text={`Something needs attention. ${message}`} label="Read error" compact />
+        </div>
       </div>
     </div>
   )
@@ -47,7 +51,14 @@ export function StatusBadge({ status }: { status: string }) {
     collected: 'bg-green-100 text-green-800', cancelled: 'bg-red-100 text-red-700',
     rejected: 'bg-red-100 text-red-700', active: 'bg-green-100 text-green-800',
     inactive: 'bg-gray-100 text-gray-600', suspended: 'bg-red-100 text-red-700',
-    approved: 'bg-green-100 text-green-800', pending: 'bg-amber-100 text-amber-800'
+    approved: 'bg-green-100 text-green-800', pending: 'bg-amber-100 text-amber-800',
+    accepting: 'bg-blue-100 text-blue-800', withdrawn: 'bg-gray-100 text-gray-600',
+    expired: 'bg-gray-100 text-gray-600', sold: 'bg-green-100 text-green-800',
+    paused: 'bg-amber-100 text-amber-800', draft: 'bg-gray-100 text-gray-600',
+    open: 'bg-blue-100 text-blue-800', filled: 'bg-green-100 text-green-800',
+    closed: 'bg-gray-100 text-gray-600', pickup_scheduled: 'bg-violet-100 text-violet-800',
+    in_transit: 'bg-indigo-100 text-indigo-800', failed: 'bg-red-100 text-red-700',
+    left: 'bg-gray-100 text-gray-600'
   }
   return <span className={`badge ${map[status] || 'bg-gray-100 text-gray-700'}`}>{status}</span>
 }

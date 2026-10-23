@@ -2,7 +2,16 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { api } from './api'
 
 export type Role = 'buyer' | 'seller' | 'admin'
-export interface User { id: number; full_name: string; email: string; role: Role; phone?: string | null }
+export interface User {
+  id: number
+  full_name: string
+  email: string
+  role: Role
+  phone?: string | null
+  voice_language?: string
+  voice_enabled?: boolean
+  preferred_language?: 'en' | 'ta'
+}
 
 interface AuthState {
   user: User | null
